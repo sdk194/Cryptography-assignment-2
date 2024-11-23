@@ -45,11 +45,35 @@ public class Assignment2 {
         return lastY;
     }
 
-    public static void main(String[] args) {
+    public static BigInteger myChineseTheorem(BigInteger m, BigInteger d, BigInteger p, BigInteger q) {
+        // p = t1, q = t2
         BigInteger n = p.multiply(q);
 
+        BigInteger a1 = m.modPow(d, p);
+        BigInteger a2 = m.modPow(d, q);
+
+        BigInteger N1 = q;
+        BigInteger N2 = p;
+
+        // need to make sure that both N numbers are less than their modulus
+        BigInteger Y1 = myEuclidean(p, N1.mod(p)).mod(p);
+        BigInteger Y2 = myEuclidean(q, N2.mod(q)).mod(q);
+
+        BigInteger message = a1.multiply(N1).multiply(Y1);
+        message = message.add(a2.multiply(N2).multiply(Y2));
+        message = message.mod(n);
+
+        return message;
+    }
+
+    public static void main(String[] args) {
         BigInteger quotientN = calculateQuotient(p, q);
 
         BigInteger d = myEuclidean(quotientN, e);
+
+        d = d.mod(quotientN);
+
+        System.out.println(d.toString());
+        System.out.println(myChineseTheorem(new BigInteger("27"), new BigInteger("37"), new BigInteger("11"), new BigInteger("5")));
     }
 }
