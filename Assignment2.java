@@ -1,9 +1,3 @@
-// use this site to help you: https://planetcalc.com/8995/
-// gonna need to do a primality test with this potentially...
-// p = 7477593670943811622381204384069354428503282772648614748638717136928507379785934557170140876675222957340434428077365698677474428857398601288792965348470819
-// q = 8880687721884226830351625505778821344847693517915244958759855480500072696419605246763466562391363703894702933585997990119250462415636703921724994688138409
-
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -45,7 +39,6 @@ public class Assignment2 {
             y = lastY.subtract(next.multiply(y));
             lastY = temp;
         }
-        // System.out.println("Roots: " + lastX.toString() + ", " + lastY.toString());
 
         return lastY;
     }
@@ -82,19 +75,21 @@ public class Assignment2 {
     }
 
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
+
+        // Grab our n to put into modulus.txt
+        if (args.length != 1) {
+            System.out.println(p.multiply(q).toString(16));
+            return;
+        }
+
         BigInteger quotientN = calculateQuotient(p, q);
 
         BigInteger d = myEuclidean(quotientN, e);
 
         d = d.mod(quotientN);
 
-        // System.out.println(hashFile("test.txt"));
-
         BigInteger messageDigest = hashFile(args[0]);
 
         System.out.println(myChineseTheorem(messageDigest, d, p, q).toString(16));
-
-        // System.out.println(d.toString());
-        // System.out.println(myChineseTheorem(new BigInteger("27"), new BigInteger("37"), new BigInteger("11"), new BigInteger("5")));
     }
 }
