@@ -4,7 +4,12 @@
 // q = 8880687721884226830351625505778821344847693517915244958759855480500072696419605246763466562391363703894702933585997990119250462415636703921724994688138409
 
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class Assignment2 {
     private static BigInteger p = new BigInteger("8EC5B76CFFC8F932F224CA5232BB9C2723314A2A5C06D97D13C74FA1BD3BD2CA43FF900BF818F13DA8FF45E78417A51EDB6BC0EA2A374610BB7EE1B070BE3023", 16);
@@ -40,7 +45,7 @@ public class Assignment2 {
             y = lastY.subtract(next.multiply(y));
             lastY = temp;
         }
-        System.out.println("Roots: " + lastX.toString() + ", " + lastY.toString());
+        // System.out.println("Roots: " + lastX.toString() + ", " + lastY.toString());
 
         return lastY;
     }
@@ -66,14 +71,30 @@ public class Assignment2 {
         return message;
     }
 
-    public static void main(String[] args) {
+    public static BigInteger hashFile(String filename) throws IOException, NoSuchAlgorithmException {
+        byte[] message = Files.readAllBytes(Path.of(filename));
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+
+        byte[] hash = digest.digest(message);
+
+        return new BigInteger(1, hash);
+
+    }
+
+    public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
         BigInteger quotientN = calculateQuotient(p, q);
 
         BigInteger d = myEuclidean(quotientN, e);
 
         d = d.mod(quotientN);
 
-        System.out.println(d.toString());
-        System.out.println(myChineseTheorem(new BigInteger("27"), new BigInteger("37"), new BigInteger("11"), new BigInteger("5")));
+        // System.out.println(hashFile("test.txt"));
+
+        BigInteger messageDigest = hashFile(args[0]);
+
+        System.out.println(myChineseTheorem(messageDigest, d, p, q).toString(16));
+
+        // System.out.println(d.toString());
+        // System.out.println(myChineseTheorem(new BigInteger("27"), new BigInteger("37"), new BigInteger("11"), new BigInteger("5")));
     }
 }
